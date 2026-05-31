@@ -153,6 +153,20 @@ Dashboard desarrollado por **MugreCorp** como herramienta de seguimiento epidemi
 
 ☣️ **Mantente informado. Mantente a salvo.** ☣️
 
-`MugreCorp · 2026 · Todos los datos son de acceso público`
+</div>
+
+---
+
+## 📄 Licencia
+
+**CC BY-NC-SA 4.0** — Compartir con atribución, sin uso comercial. Consulta [LICENSE](LICENSE) para más detalles.
+
+---
+
+<div align="center">
+
+**Desarrollado por [Hugo Perez-Vigo](https://hugopvigo.es)** · [@hugopvigo](https://x.com/hugopvigo)
+
+[![GitHub](https://img.shields.io/badge/GitHub-Hugopvigo-181717?style=for-the-badge&logo=github)](https://github.com/Hugopvigo)
 
 </div>
