@@ -1,172 +1,131 @@
-# 🦠 Hantavirus Monitor — MugreCorp
+<p align="center">
+  <img src="docs/capturas/00-cabecera.png" alt="Hantavirus Monitor — panel de seguimiento del brote del MV Hondius" width="100%">
+</p>
 
-> **Monitor en tiempo real del brote de Hantavirus 2026 · MV Hondius · Brote Atlántico**
+<p align="center">
+  <b>Un panel de seguimiento del brote de hantavirus (cepa Andes) del MV Hondius.</b><br>
+  HTML, CSS y JavaScript planos: sin frameworks, sin build, sin npm.
+</p>
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-GitHub_Pages-red?style=for-the-badge)](https://hugopvigo.github.io/dashboard_virus/)
-[![Status](https://img.shields.io/badge/🔴_Estado-EN_VIVO-red?style=flat-square)](https://hugopvigo.github.io/dashboard_virus/)
-[![MugreCorp](https://img.shields.io/badge/🤖_by-MugreCorp-blueviolet?style=flat-square)](https://hugopvigo.github.io/dashboard_virus/)
-
----
-
-## ☣️ Sobre el brote
-
-En marzo de 2026, el crucero **MV Hondius** zarpa de Ushuaia (Patagonia, Argentina). A bordo viajan ~150 pasajeros que, sin saberlo, han estado expuestos al **virus Hanta cepa Andes** — la única cepa conocida con transmisión persona-a-persona. Lo que empieza como un crucero de expedición por el Atlántico Sur se convierte en una crisis sanitaria internacional que involucra a **Argentina, Cabo Verde, Suiza, Sudáfrica y España**.
-
-**MugreCorp** despliega este dashboard de inteligencia epidemiológica para el seguimiento en tiempo real del brote.
-
----
-
-## 🖥️ Dashboard — Funcionalidades
-
-### 🗺️ Mapa interactivo en tiempo real
-- Tiles oscuros **CartoDB Dark** con Leaflet.js
-- Marcadores por nivel de riesgo con **popups detallados**
-- **Ruta trazada** del MV Hondius: Ushuaia → Atlántico → Cabo Verde → Tenerife
-- Marcador del barco con **animación de pulso**
-
-### 📊 Métricas del brote
-| Indicador | Valor actual |
-|-----------|-------------|
-| ☠️ Fallecidos | **3** confirmados |
-| 🧫 Casos confirmados | **8** (labs Suiza + Sudáfrica) |
-| 🔬 Sospechosos | **12** en evaluación |
-| 🚢 En cuarentena | **~150** pasajeros |
-| 🌍 Países afectados | **5** con vigilancia activa |
-
-### 📈 Gráfica de evolución
-- Línea temporal de casos confirmados y fallecidos
-- **Tooltips interactivos** con Chart.js v4
-- Animación suave al cargar
-
-### 🌍 Tabla de países
-- **Ordenable por cualquier columna** (clic en cabecera)
-- Indicadores visuales de nivel de riesgo
-- Estado actualizable vía `data.json`
-
-### ⏱️ Cronología del brote
-- Timeline completo desde el zarpe (20 Mar) hasta hoy
-- Eventos clave marcados por severidad
-
-### 🏥 Información médica
-- Síntomas por fase (Hanta cardiopulmonar)
-- Vías de transmisión (cepa Andes)
-- Protocolo de actuación ciudadana
-- Links a fuentes oficiales (OMS, ECDC, Ministerio de Sanidad)
+<p align="center">
+  <a href="https://hugopvigo.github.io/Dashboard-Virus/"><img alt="demo" src="https://img.shields.io/badge/Demo-EN%20VIVO-ff5a3c?style=flat-square&labelColor=1a1a1e"></a>
+  <a href="https://github.com/Hugopvigo/Dashboard-Virus/actions/workflows/deploy.yml"><img alt="deploy" src="https://github.com/Hugopvigo/Dashboard-Virus/actions/workflows/deploy.yml/badge.svg"></a>
+  <img alt="licencia" src="https://img.shields.io/badge/licencia-CC%20BY-NC-SA%204.0-8E8E93?style=flat-square&labelColor=1a1a1e">
+  <img alt="stack" src="https://img.shields.io/badge/HTML%20%2B%20Leaflet%20%2B%20Chart.js-8E8E93?style=flat-square&labelColor=1a1a1e">
+</p>
 
 ---
 
-## 🧬 Cepa Andes — Por qué es distinta
+## Qué es esto
 
-> ⚠️ La cepa **Andes** es la **única variante de Hantavirus** con transmisión documentada entre humanos (no solo de roedor a humano). Tasa de mortalidad: **~25–35%**.
+Un dashboard de inteligencia epidemiológica de **MugreBiological Division**
+(MugreCorp) sobre el brote de hantavirus de la **cepa Andes** iniciado a bordo
+del crucero de expedición MV Hondius.
 
+Todo el contenido sale de un único fichero: **`data.json`**. El panel es
+estático y se publica en GitHub Pages; no hay backend ni base de datos.
+
+| | |
+|---|---|
+| ![resumen](docs/capturas/01-web.png) | ![países](docs/capturas/02-paises.png) |
+| La vista **Resumen**: banner de alerta, cinco métricas, mapa con la ruta del barco y estado por ubicación. | La vista **Países**: tabla ordenable por cualquier columna, con notas por país. |
+| ![cronología](docs/capturas/03-cronologia.png) | |
+| La vista **Cronología**: 16 hitos del brote, del zarpe del 20 de marzo a la evacuación del 10 de mayo. | |
+
+## Qué muestra
+
+**5 vistas**, todas en el mismo `index.html`:
+
+1. **Resumen** — banner de riesgo (OMS), métricas, mapa Leaflet con la ruta
+   del barco y estado por ubicación.
+2. **Países** — tabla de 15 ubicaciones (14 países y el propio barco) con
+   fallecidos, confirmados, sospechosos, estado y notas; se ordena pulsando en
+   la cabecera.
+3. **Cronología** — los 16 hitos del brote, con el punto de color según la
+   gravedad.
+4. **Información médica** — síntomas por fase, vías de transmisión de la cepa
+   Andes y protocolo de actuación ciudadana.
+5. **Noticias** — agregado de **6 feeds RSS** (El País, 20min, ABC Ciencia, La
+   Vanguardia, BBC Health y El Mundo) con filtro por fuente.
+
+El mapa usa tiles oscuros de CartoDB y la gráfica de evolución, Chart.js 4.
+
+## Actualizar los datos
+
+Todos los números viven en `data.json`. Para cambiarlos:
+
+```bash
+git clone https://github.com/Hugopvigo/Dashboard-Virus.git
+cd Dashboard-Virus
+$EDITOR data.json
+git commit -am "data: cifras del brote"
+git push
 ```
-Ruta de transmisión habitual:   Roedor → Aerosol → Humano
-Cepa Andes (este brote):        Humano → Fluidos → Humano  ⚠️
-```
 
----
-
-## 🚀 Tecnología
-
-```
-100% Vanilla — sin frameworks, sin build tools, sin npm
-```
-
-| Librería | Versión | Uso |
-|----------|---------|-----|
-| [Leaflet.js](https://leafletjs.com) | 1.9.4 | Mapa interactivo |
-| [Chart.js](https://www.chartjs.org) | 4.4.0 | Gráficas |
-| [CartoDB Dark](https://carto.com/basemaps/) | — | Tiles del mapa |
-| [IBM Plex Mono/Sans](https://fonts.google.com/specimen/IBM+Plex+Mono) | — | Tipografía |
-
-### Estructura de archivos
-```
-📁 dashboard_virus/
-├── 📄 index.html          ← shell principal
-├── 📄 data.json           ← fuente única de datos (editable)
-├── 🖼️  logo.png            ← MugreCorp brand
-├── 📁 css/
-│   └── style.css
-└── 📁 js/
-    ├── map.js             ← Leaflet + ruta del barco
-    ├── charts.js          ← Chart.js trend line
-    └── main.js            ← boot, nav, contadores, tabla
-```
-
----
-
-## ⚙️ Actualizar datos del brote
-
-Todos los datos viven en **`data.json`**. Para actualizar el dashboard basta con editar ese archivo:
+La estructura de `data.json`:
 
 ```jsonc
-// data.json — campos principales
 {
-  "totals": {
-    "deaths": 3,       // ← actualizar aquí
-    "confirmed": 8,
-    "suspected": 12
-  },
-  "countries": [ ... ],   // añadir/modificar países
-  "timeline":  [ ... ],   // añadir nuevos eventos
-  "trend":     { ... }    // añadir puntos al gráfico
+  "meta":      { "lastUpdate": "…", "alertLevel": "ALTO", "alertText": "…" },
+  "totals":    { "deaths": 3, "confirmed": 13, "suspected": 7,
+                 "quarantine": 147, "countries": 15 },
+  "facts":     [ { "label": "…", "value": "…", "color": "red" } ],
+  "countries": [ { "name": "…", "lat": 0, "lng": 0,
+                   "deaths": 0, "confirmed": 0, "suspected": 0,
+                   "status": "high", "statusText": "…", "notes": "…" } ],
+  "shipRoute": [ { "lat": 0, "lng": 0, "label": "…" } ],
+  "timeline":  [ { "date": "20 Mar", "dot": "gray", "text": "…" } ],
+  "newsSources": [ { "name": "El País", "color": "#4488ff", "url": "…" } ],
+  "trend":     { "labels": [ … ], "confirmed": [ … ], "deaths": [ … ] }
 }
 ```
 
-> 💡 **Próximamente:** integración con feeds RSS de Reuters, El País y OMS para actualización automática de noticias.
+Hay además **`admin.html`**: una pantalla que carga `data.json` desde la API de
+GitHub, deja editar las cifras, el banner, los países, la cronología y la
+gráfica, y los vuelve a subir con un `PUT` a la Contents API. Pide un token
+personal de GitHub, que se guarda solo en el `localStorage` del navegador (no
+va al repo). El repo en GitHub se llama `Dashboard-Virus`; la página admin
+conserva el nombre antiguo `dashboard_virus`, que GitHub redirige
+automáticamente.
 
----
-
-## 🌐 Despliegue en GitHub Pages
+## Verlo en local
 
 ```bash
-# Clonar y servir en local
-git clone git@github.com:Hugopvigo/dashboard_virus.git
-cd dashboard_virus
+git clone https://github.com/Hugopvigo/Dashboard-Virus.git
+cd Dashboard-Virus
 python3 -m http.server 8000
 # → http://localhost:8000
 ```
 
-**Para GitHub Pages:** Settings → Pages → Branch: `main` / Folder: `/ (root)` → Save
+Hace falta servidor (no vale abrir `index.html` con `file://`, porque el panel
+pide `data.json` por `fetch`).
 
-URL pública: **https://hugopvigo.github.io/dashboard_virus/**
+El despliegue a GitHub Pages es automático: cada `push` a `main` dispara
+`.github/workflows/deploy.yml`.
 
----
+## Estructura
 
-## 📡 Fuentes oficiales
+```
+Dashboard-Virus/
+├── index.html               shell principal (5 vistas)
+├── admin.html               editor de data.json vía API de GitHub
+├── hantavirus-dashboard.html  versión autónoma, con los datos incrustados
+├── data.json                fuente única de datos
+├── css/style.css
+├── js/
+│   ├── map.js               Leaflet + ruta del barco + marcadores
+│   ├── charts.js            gráfica de evolución (Chart.js)
+│   ├── news.js              agregado de RSS con filtros
+│   └── main.js              arranque, navegación, contadores y tablas
+├── logo.webp               marca MugreBiological
+└── docs/capturas/
+```
 
-- 🏥 [Ministerio de Sanidad de España](https://www.sanidad.gob.es)
-- 🌍 [OMS — Hantavirus](https://www.who.int/news-room/fact-sheets/detail/hantavirus-pulmonary-syndrome)
-- 🇪🇺 [ECDC — Hantavirus](https://www.ecdc.europa.eu/en/hantavirus-infection)
+## Licencia
 
----
+El código y los datos están bajo **CC BY-NC-SA 4.0** (compartir con
+atribución, sin uso comercial y en las mismas condiciones). Ver
+[LICENSE](LICENSE).
 
-## 🤖 MugreCorp
-
-> *Inteligencia artificial al servicio de la defensa biológica.*
-
-Dashboard desarrollado por **MugreCorp** como herramienta de seguimiento epidemiológico de código abierto.
-
----
-
-<div align="center">
-
-☣️ **Mantente informado. Mantente a salvo.** ☣️
-
-</div>
-
----
-
-## 📄 Licencia
-
-**CC BY-NC-SA 4.0** — Compartir con atribución, sin uso comercial. Consulta [LICENSE](LICENSE) para más detalles.
-
----
-
-<div align="center">
-
-**Desarrollado por [Hugo Perez-Vigo](https://hugopvigo.es)** · [@hugopvigo](https://x.com/hugopvigo)
-
-[![GitHub](https://img.shields.io/badge/GitHub-Hugopvigo-181717?style=for-the-badge&logo=github)](https://github.com/Hugopvigo)
-
-</div>
+Las fuentes citadas (OMS, ECDC, Ministerio de Sanidad) enlazan a sus páginas
+originales.
