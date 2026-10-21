@@ -36,6 +36,12 @@ estático y se publica en GitHub Pages; no hay backend ni base de datos.
 | ![cronología](docs/capturas/03-cronologia.png) | |
 | La vista **Cronología**: 16 hitos del brote, del zarpe del 20 de marzo a la evacuación del 10 de mayo. | |
 
+<p align="center">
+  <img src="docs/capturas/04-demo.gif" alt="El panel cambiando entre las pestañas Resumen, Países, Cronología y Noticias" width="620">
+</p>
+
+<p align="center"><sub>El panel cambiando de pestaña. Es el dashboard de verdad, con sus datos.</sub></p>
+
 ## Qué muestra
 
 **5 vistas**, todas en el mismo `index.html`:
