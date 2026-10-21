@@ -79,9 +79,13 @@
       <div class="map-card">
         <div class="card-header">
           <span class="card-title">Distribución geográfica</span>
-          <span class="card-title" style="color:var(--text3)">Clic en marcador para detalles</span>
+          <div class="map-head-right">
+            <span class="card-title" style="color:var(--text3)">Clic en marcador para detalles</span>
+            <button type="button" id="map-theme-toggle" class="map-theme-btn"
+                    aria-pressed="true" title="Alternar entre modo oscuro y claro del mapa">☾ Oscuro</button>
+          </div>
         </div>
-        <div id="map"></div>
+        <div id="map" class="map-tiles-dark"></div>
       </div>
 
       <div class="map-card">

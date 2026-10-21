@@ -252,6 +252,11 @@ function initNav() {
     refreshBtn.addEventListener('click', refreshData);
   }
 
+  const mapThemeBtn = document.getElementById('map-theme-toggle');
+  if (mapThemeBtn) {
+    mapThemeBtn.addEventListener('click', toggleMapTheme);
+  }
+
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));

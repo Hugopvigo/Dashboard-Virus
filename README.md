@@ -48,7 +48,33 @@ estático y se publica en GitHub Pages; no hay backend ni base de datos.
 5. **Noticias** — agregado de **6 feeds RSS** (El País, 20min, ABC Ciencia, La
    Vanguardia, BBC Health y El Mundo) con filtro por fuente.
 
-El mapa usa tiles oscuros de CartoDB y la gráfica de evolución, Chart.js 4.
+El mapa usa las teselas estándar de **OpenStreetMap** (sin API key ni
+registro) y la gráfica de evolución, Chart.js 4.
+
+## El mapa
+
+Las dos versiones del panel (`index.html` y la autónoma
+`hantavirus-dashboard.html`) comparten el mismo mapa Leaflet:
+
+- **Proveedor de teselas**: las estándar de **OpenStreetMap**
+  (`https://tile.openstreetmap.org/{z}/{x}/{y}.png`). Son gratis, **no piden API
+  key ni registro**, y no hay ninguna clave en el repo.
+- **Atribución**: obligatoria y siempre visible en la esquina del mapa
+  («© OpenStreetMap © los colaboradores», con enlace a
+  [openstreetmap.org/copyright](https://www.openstreetmap.org/copyright)).
+- **Modo oscuro y claro**: OpenStreetMap solo publica teselas claras y el panel
+  es oscuro, así que las teselas se invierten con un filtro CSS que solo
+  afecta al panel de teselas (marcadores, ruta y popups mantienen sus
+  colores). El botón **☾ Oscuro / ☀ Claro** de la cabecera del mapa alterna
+  entre el modo oscuro y las teselas estándar sin filtrar.
+- **Uso**: las teselas oficiales de OSM son para un uso ligeiro, como este
+  panel ([política de uso](https://operations.osmfoundation.org/policies/tiles/)).
+  Si el panel creciera mucho, habría que alojar teselas propias o usar un
+  proveedor con plan gratuito.
+
+La ruta del barco, los marcadores por país y los popups con las cifras están
+en `js/map.js` (panel principal) y en el bloque `<script>` del propio
+`hantavirus-dashboard.html` (versión autónoma), con los datos incrustados.
 
 ## Actualizar los datos
 
@@ -110,10 +136,11 @@ Dashboard-Virus/
 ├── index.html               shell principal (5 vistas)
 ├── admin.html               editor de data.json vía API de GitHub
 ├── hantavirus-dashboard.html  versión autónoma, con los datos incrustados
+│                              y el mismo mapa Leaflet
 ├── data.json                fuente única de datos
 ├── css/style.css
 ├── js/
-│   ├── map.js               Leaflet + ruta del barco + marcadores
+│   ├── map.js               Leaflet + teselas OSM + ruta del barco + marcadores
 │   ├── charts.js            gráfica de evolución (Chart.js)
 │   ├── news.js              agregado de RSS con filtros
 │   └── main.js              arranque, navegación, contadores y tablas

@@ -1,5 +1,12 @@
 /* map.js — Leaflet interactive map */
 
+/* Teselas estándar de OpenStreetMap: gratis, sin API key y sin registro.
+   https://operations.osmfoundation.org/policies/tiles/
+   La atribución es obligatoria y por eso va siempre visible en el mapa. */
+const OSM_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+const OSM_ATTRIBUTION =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; los colaboradores';
+
 function initMap(data) {
   const container = document.getElementById('map');
   if (!container) return;
@@ -17,9 +24,8 @@ function initMap(data) {
     maxZoom: 10
   }).setView([15, -20], 3);
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: 'abcd',
+  L.tileLayer(OSM_TILE_URL, {
+    attribution: OSM_ATTRIBUTION,
     maxZoom: 19
   }).addTo(map);
 
@@ -86,4 +92,21 @@ function initMap(data) {
   });
 
   window._dashMap = map;
+}
+
+/* Alterna entre las teselas claras de OSM tal cual y el modo oscuro
+   (las mismas teselas invertidas con un filtro CSS, css/style.css). */
+function toggleMapTheme() {
+  const container = document.getElementById('map');
+  if (!container) return;
+
+  const dark = container.classList.toggle('map-tiles-dark');
+  const btn = document.getElementById('map-theme-toggle');
+  if (btn) {
+    btn.textContent = dark ? '☾ Oscuro' : '☀ Claro';
+    btn.setAttribute('aria-pressed', String(dark));
+    btn.title = dark
+      ? 'Mapa en modo oscuro (teselas OSM invertidas)'
+      : 'Mapa en modo claro (teselas OSM estándar)';
+  }
 }

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hantavirus Monitor — MV Hondius</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
 
@@ -262,28 +263,179 @@
 
   .card-body { padding: 20px; }
 
-  /* SVG MAP */
-  #world-map {
-    width: 100%;
-    height: 300px;
-    display: block;
+  /* LEAFLET MAP */
+  #map {
+    height: 320px;
+    isolation: isolate;
   }
 
-  .country-path {
-    fill: var(--bg3);
-    stroke: var(--border2);
-    stroke-width: 0.5;
-    transition: fill 0.3s;
+  .leaflet-container {
+    background: var(--bg3) !important;
+    font-family: var(--sans) !important;
+  }
+
+  .leaflet-control-zoom {
+    border: 1px solid var(--border2) !important;
+    box-shadow: none !important;
+  }
+
+  .leaflet-control-zoom a {
+    background: var(--bg2) !important;
+    color: var(--text2) !important;
+    border-color: var(--border) !important;
+    line-height: 26px !important;
+  }
+
+  .leaflet-control-zoom a:hover {
+    background: var(--bg3) !important;
+    color: var(--text) !important;
+  }
+
+  .leaflet-control-attribution {
+    background: rgba(10,12,15,0.75) !important;
+    color: var(--text3) !important;
+    font-size: 9px !important;
+  }
+
+  .leaflet-control-attribution a { color: var(--text3) !important; }
+
+  .leaflet-popup-content-wrapper {
+    background: var(--bg3) !important;
+    border: 1px solid var(--border2) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6) !important;
+    padding: 0 !important;
+  }
+
+  .leaflet-popup-content {
+    margin: 0 !important;
+    padding: 14px 16px !important;
+    min-width: 200px;
+  }
+
+  .leaflet-popup-tip-container { display: none; }
+
+  .leaflet-popup-close-button {
+    color: var(--text3) !important;
+    font-size: 16px !important;
+    top: 8px !important;
+    right: 8px !important;
+  }
+
+  .leaflet-popup-close-button:hover { color: var(--text) !important; }
+
+  .leaflet-tooltip {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 11px;
+    box-shadow: none;
+  }
+
+  .leaflet-tooltip::before { display: none; }
+
+  /* Cabecera del mapa: botón claro/oscuro */
+  .map-head-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .map-theme-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text3);
     cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
   }
 
-  .country-path:hover { fill: rgba(255,255,255,0.05); }
-  .country-path.affected-high { fill: var(--red-dim); stroke: var(--red); stroke-width: 1; }
-  .country-path.affected-med { fill: var(--amber-dim); stroke: var(--amber); stroke-width: 1; }
-  .country-path.affected-low { fill: var(--blue-dim); stroke: var(--blue); stroke-width: 1; }
+  .map-theme-btn:hover { border-color: var(--border2); color: var(--text); }
+
+  /* OpenStreetMap solo publica teselas claras y el panel es oscuro, así que
+     se invierten con un filtro. Solo afecta al panel de teselas: marcadores,
+     ruta y popups mantienen sus colores. */
+  #map.map-tiles-dark .leaflet-tile-pane {
+    filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.95) saturate(0.65);
+  }
+
+  .map-icon-wrapper { background: none !important; border: none !important; }
+
+  .map-dot {
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  .map-dot:hover { transform: scale(1.4); }
+
+  .map-dot.marker-red   { background: var(--red);   box-shadow: 0 0 0 5px rgba(255,68,68,0.18); }
+  .map-dot.marker-amber { background: var(--amber);  box-shadow: 0 0 0 5px rgba(255,170,0,0.18); }
+  .map-dot.marker-blue  { background: var(--blue);   box-shadow: 0 0 0 5px rgba(68,136,255,0.18); }
+  .map-dot.marker-gray  { background: rgba(255,255,255,0.25); }
+
+  .map-dot.marker-ship {
+    width: 10px;
+    height: 10px;
+    background: rgba(255,255,255,0.92);
+    border-color: rgba(255,255,255,0.3);
+  }
+
+  .popup-title {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .popup-status {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .popup-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text2);
+    padding: 3px 0;
+  }
+
+  .popup-label { color: var(--text3); }
+
+  .popup-notes {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    line-height: 1.45;
+  }
 
   /* COUNTRY LIST */
-  .country-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+  .country-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    max-height: 320px;
+    overflow-y: auto;
+  }
 
   .country-item {
     background: var(--bg2);
@@ -543,64 +695,13 @@
       <div class="map-card">
         <div class="card-header">
           <span class="card-title">Distribución geográfica</span>
-          <span class="card-title" style="color:var(--text3)">Haz clic en un país</span>
+          <div class="map-head-right">
+            <span class="card-title" style="color:var(--text3)">Haz clic en un país</span>
+            <button type="button" id="map-theme-toggle" class="map-theme-btn"
+                    aria-pressed="true" title="Alternar entre modo oscuro y claro del mapa">☾ Oscuro</button>
+          </div>
         </div>
-        <div style="padding:20px">
-          <svg id="world-map" viewBox="0 0 900 450" xmlns="http://www.w3.org/2000/svg">
-            <!-- Simplified world map paths -->
-            <!-- Europe -->
-            <path class="country-path affected-low" id="map-spain" d="M380 140 L420 138 L430 148 L425 162 L415 168 L395 165 L378 155 Z" data-country="España"/>
-            <path class="country-path affected-med" id="map-switzerland" d="M432 132 L445 130 L450 138 L443 144 L432 142 Z" data-country="Suiza"/>
-            <!-- Africa -->
-            <path class="country-path" id="map-caboverde" d="M345 220 L352 218 L355 225 L349 228 Z" data-country="Cabo Verde"/>
-            <path class="country-path affected-med" id="map-southafrica" d="M450 340 L490 330 L510 345 L505 375 L470 385 L445 375 L440 355 Z" data-country="Sudáfrica"/>
-            <!-- South America -->
-            <path class="country-path affected-high" id="map-argentina" d="M220 300 L255 290 L268 310 L270 360 L260 400 L240 420 L220 410 L210 380 L208 340 Z" data-country="Argentina"/>
-
-            <!-- Generic continents as background shapes -->
-            <!-- North America -->
-            <path class="country-path" d="M50 80 L180 70 L210 100 L220 150 L190 180 L150 200 L100 195 L60 170 L40 130 Z"/>
-            <!-- Central+South America -->
-            <path class="country-path" d="M140 200 L180 195 L210 215 L215 260 L200 300 L180 290 L155 300 L140 350 L120 360 L110 310 L115 250 L130 220 Z"/>
-            <!-- Europe general -->
-            <path class="country-path" d="M360 80 L500 75 L520 100 L510 140 L480 155 L440 150 L410 140 L365 145 L355 120 Z"/>
-            <!-- Africa general -->
-            <path class="country-path" d="M380 185 L500 180 L530 210 L535 280 L520 350 L490 390 L450 395 L410 375 L385 330 L370 270 L365 220 Z"/>
-            <!-- Asia -->
-            <path class="country-path" d="M520 70 L750 65 L790 90 L800 140 L780 175 L720 190 L650 200 L570 185 L530 165 L515 130 Z"/>
-            <!-- Oceania -->
-            <path class="country-path" d="M700 280 L780 270 L820 290 L825 340 L790 360 L740 350 L700 330 Z"/>
-
-            <!-- Affected markers -->
-            <circle cx="238" cy="355" r="8" fill="var(--red)" opacity="0.3" class="pulse-circle"/>
-            <circle cx="238" cy="355" r="4" fill="var(--red)"/>
-            <circle cx="440" cy="134" r="6" fill="var(--amber)" opacity="0.3"/>
-            <circle cx="440" cy="134" r="3" fill="var(--amber)"/>
-            <circle cx="478" cy="358" r="6" fill="var(--amber)" opacity="0.3"/>
-            <circle cx="478" cy="358" r="3" fill="var(--amber)"/>
-            <circle cx="400" cy="152" r="6" fill="var(--blue)" opacity="0.3"/>
-            <circle cx="400" cy="152" r="3" fill="var(--blue)"/>
-            <!-- Boat position -->
-            <circle cx="350" cy="222" r="6" fill="white" opacity="0.2"/>
-            <circle cx="350" cy="222" r="3" fill="white" opacity="0.7"/>
-            <text x="355" y="218" fill="rgba(255,255,255,0.5)" font-size="9" font-family="monospace">MV Hondius</text>
-
-            <!-- Route line -->
-            <path d="M238 355 Q280 280 350 222 Q390 190 400 152" stroke="rgba(255,68,68,0.3)" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
-            <path d="M350 222 Q390 195 440 134" stroke="rgba(255,170,0,0.3)" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
-            <path d="M350 222 Q410 240 478 358" stroke="rgba(255,170,0,0.3)" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
-
-            <!-- Legend -->
-            <rect x="20" y="400" width="10" height="10" rx="2" fill="var(--red)" opacity="0.7"/>
-            <text x="34" y="409" fill="rgba(255,255,255,0.5)" font-size="10" font-family="monospace">Brote activo</text>
-            <rect x="120" y="400" width="10" height="10" rx="2" fill="var(--amber)" opacity="0.7"/>
-            <text x="134" y="409" fill="rgba(255,255,255,0.5)" font-size="10" font-family="monospace">Casos confirmados</text>
-            <rect x="260" y="400" width="10" height="10" rx="2" fill="var(--blue)" opacity="0.7"/>
-            <text x="274" y="409" fill="rgba(255,255,255,0.5)" font-size="10" font-family="monospace">Vigilancia activa</text>
-            <circle cx="24" cy="420" r="4" fill="white" opacity="0.5"/>
-            <text x="34" y="424" fill="rgba(255,255,255,0.5)" font-size="10" font-family="monospace">MV Hondius (en ruta)</text>
-          </svg>
-        </div>
+        <div id="map" class="map-tiles-dark"></div>
       </div>
 
       <div class="map-card">
@@ -833,15 +934,25 @@
 
 </main>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const DATA = {
   countries: [
-    { name: 'Argentina', flag: '🇦🇷', deaths: 2, confirmed: 3, suspected: 0, status: 'high', statusText: 'Brote activo', notes: 'Origen probable. Patagonia. Contagio previo al embarque.' },
-    { name: 'MV Hondius (crucero)', flag: '🚢', deaths: 1, confirmed: 3, suspected: 5, status: 'high', statusText: 'Cuarentena activa', notes: 'Rumbo a Granadilla de Abona (Tenerife). ~150 pasajeros.' },
-    { name: 'Suiza', flag: '🇨🇭', deaths: 0, confirmed: 1, suspected: 0, status: 'med', statusText: 'Caso aislado', notes: 'Ex-pasajero del barco. Hospitalizado en Zúrich.' },
-    { name: 'Sudáfrica', flag: '🇿🇦', deaths: 0, confirmed: 1, suspected: 0, status: 'med', statusText: 'Caso aislado', notes: 'Confirmado por laboratorio. Seguimiento activo.' },
-    { name: 'España', flag: '🇪🇸', deaths: 0, confirmed: 0, suspected: 7, status: 'low', statusText: 'Vigilancia', notes: '14 españoles en el barco. Traslado a Torrejón tras llegada.' },
-    { name: 'Cabo Verde', flag: '🇨🇻', deaths: 0, confirmed: 0, suspected: 0, status: 'none', statusText: 'Sin casos', notes: 'Denegó entrada al barco. Personal médico subió a bordo.' },
+    { name: 'Argentina', flag: '🇦🇷', lat: -40.0, lng: -63.5, deaths: 2, confirmed: 3, suspected: 0, status: 'high', statusText: 'Brote activo', notes: 'Origen probable. Patagonia. Contagio previo al embarque.' },
+    { name: 'MV Hondius (crucero)', flag: '🚢', lat: 28.07, lng: -16.56, deaths: 1, confirmed: 3, suspected: 5, status: 'high', statusText: 'Cuarentena activa', notes: 'Rumbo a Granadilla de Abona (Tenerife). ~150 pasajeros.' },
+    { name: 'Suiza', flag: '🇨🇭', lat: 47.4, lng: 8.5, deaths: 0, confirmed: 1, suspected: 0, status: 'med', statusText: 'Caso aislado', notes: 'Ex-pasajero del barco. Hospitalizado en Zúrich.' },
+    { name: 'Sudáfrica', flag: '🇿🇦', lat: -26.2, lng: 28.0, deaths: 0, confirmed: 1, suspected: 0, status: 'med', statusText: 'Caso aislado', notes: 'Confirmado por laboratorio. Seguimiento activo.' },
+    { name: 'España', flag: '🇪🇸', lat: 40.4, lng: -3.7, deaths: 0, confirmed: 0, suspected: 7, status: 'low', statusText: 'Vigilancia', notes: '14 españoles en el barco. Traslado a Torrejón tras llegada.' },
+    { name: 'Cabo Verde', flag: '🇨🇻', lat: 14.93, lng: -23.51, deaths: 0, confirmed: 0, suspected: 0, status: 'none', statusText: 'Sin casos', notes: 'Denegó entrada al barco. Personal médico subió a bordo.' },
+  ],
+  shipRoute: [
+    { lat: -54.8, lng: -68.3, label: 'Ushuaia — zarpe 20 Mar' },
+    { lat: -38.0, lng: -57.0, label: 'Atlántico Sur' },
+    { lat: -15.0, lng: -35.0, label: 'Atlántico Central' },
+    { lat: 5.0,   lng: -26.0, label: 'Atlántico Norte' },
+    { lat: 14.93, lng: -23.51, label: 'Cabo Verde — acceso denegado 4 May' },
+    { lat: 21.0,  lng: -18.0, label: 'Posición — 7 May' },
+    { lat: 28.07, lng: -16.56, label: 'Tenerife — evacuación completada 10 May' },
   ],
   timeline: [
     { date: '20 Mar', dot: 'gray', text: 'El <strong>MV Hondius</strong> zarpa de Ushuaia (Argentina) con ~150 pasajeros.' },
@@ -859,6 +970,107 @@ const DATA = {
     deaths: [0, 1, 2, 2, 3, 3, 3, 3],
   }
 };
+
+/* ── MAPA ──────────────────────────────────────────────────────────────────────
+   Teselas estándar de OpenStreetMap: gratis, sin API key y sin registro.
+   https://operations.osmfoundation.org/policies/tiles/
+   La atribución es obligatoria y por eso va siempre visible en el mapa. */
+const OSM_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+const OSM_ATTRIBUTION =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; los colaboradores';
+
+function initMap() {
+  const container = document.getElementById('map');
+  if (!container || typeof L === 'undefined') return;
+
+  const map = L.map('map', {
+    zoomControl: true,
+    scrollWheelZoom: false,
+    attributionControl: true,
+    minZoom: 2,
+    maxZoom: 10
+  }).setView([-14, -40], 2);
+
+  L.tileLayer(OSM_TILE_URL, {
+    attribution: OSM_ATTRIBUTION,
+    maxZoom: 19
+  }).addTo(map);
+
+  // Ruta del barco
+  L.polyline(DATA.shipRoute.map(p => [p.lat, p.lng]), {
+    color: 'rgba(255, 68, 68, 0.45)',
+    weight: 1.5,
+    dashArray: '6 4'
+  }).addTo(map);
+
+  DATA.shipRoute.forEach(p => {
+    L.circleMarker([p.lat, p.lng], {
+      radius: 3,
+      fillColor: 'rgba(255,68,68,0.5)',
+      color: 'transparent',
+      fillOpacity: 1
+    }).bindTooltip(p.label, { direction: 'top', offset: [0, -4] }).addTo(map);
+  });
+
+  // Marcadores por ubicación
+  const markerClass = { high: 'marker-red', med: 'marker-amber', low: 'marker-blue', none: 'marker-gray' };
+  const statusColor  = { high: '#ff4444', med: '#ffaa00', low: '#4488ff', none: 'rgba(255,255,255,0.3)' };
+
+  DATA.countries.forEach(c => {
+    const isShip = c.name.indexOf('MV Hondius') === 0;
+    const cls    = isShip ? 'marker-ship' : (markerClass[c.status] || 'marker-gray');
+    const col    = statusColor[c.status] || statusColor.none;
+
+    const icon = L.divIcon({
+      className: 'map-icon-wrapper',
+      html: `<span class="map-dot ${cls}"></span>`,
+      iconSize:   [14, 14],
+      iconAnchor: [7, 7],
+      popupAnchor: [0, -10]
+    });
+
+    const content = `
+      <div class="popup-title">${c.flag} ${c.name}</div>
+      <div class="popup-status" style="color:${col}">${c.statusText}</div>
+      <div class="popup-row">
+        <span class="popup-label">Fallecidos</span>
+        <span style="color:#ff4444;font-family:'IBM Plex Mono',monospace;font-weight:600">${c.deaths}</span>
+      </div>
+      <div class="popup-row">
+        <span class="popup-label">Confirmados</span>
+        <span style="color:#ffaa00;font-family:'IBM Plex Mono',monospace;font-weight:600">${c.confirmed}</span>
+      </div>
+      <div class="popup-row">
+        <span class="popup-label">Sospechosos</span>
+        <span style="font-family:'IBM Plex Mono',monospace">${c.suspected}</span>
+      </div>
+      <div class="popup-notes">${c.notes}</div>
+    `;
+
+    L.marker([c.lat, c.lng], { icon })
+      .bindPopup(content, { maxWidth: 260 })
+      .addTo(map);
+  });
+
+  window._dashMap = map;
+}
+
+/* Alterna entre las teselas claras de OSM tal cual y el modo oscuro
+   (las mismas teselas invertidas con un filtro CSS). */
+function toggleMapTheme() {
+  const container = document.getElementById('map');
+  if (!container) return;
+
+  const dark = container.classList.toggle('map-tiles-dark');
+  const btn = document.getElementById('map-theme-toggle');
+  if (btn) {
+    btn.textContent = dark ? '☾ Oscuro' : '☀ Claro';
+    btn.setAttribute('aria-pressed', String(dark));
+    btn.title = dark
+      ? 'Mapa en modo oscuro (teselas OSM invertidas)'
+      : 'Mapa en modo claro (teselas OSM estándar)';
+  }
+}
 
 function buildCountriesTable() {
   const tbody = document.getElementById('countries-table-body');
@@ -974,16 +1186,26 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('view-' + btn.dataset.view).classList.add('active');
-    if (btn.dataset.view === 'overview') buildChart();
+    if (btn.dataset.view === 'overview') {
+      buildChart();
+      if (window._dashMap) window._dashMap.invalidateSize();
+    }
   });
 });
+
+const mapThemeBtn = document.getElementById('map-theme-toggle');
+if (mapThemeBtn) mapThemeBtn.addEventListener('click', toggleMapTheme);
 
 buildCountriesTable();
 buildTimeline();
 buildChart();
+initMap();
 updateClock();
 setInterval(updateClock, 60000);
-window.addEventListener('resize', buildChart);
+window.addEventListener('resize', () => {
+  buildChart();
+  if (window._dashMap) window._dashMap.invalidateSize();
+});
 </script>
 </body>
 </html>

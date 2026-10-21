@@ -322,6 +322,36 @@ main { padding: 32px; max-width: 1200px; margin: 0 auto; }
   font-family: var(--sans) !important;
 }
 
+/* Map header: dark/light tile toggle */
+.map-head-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.map-theme-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--text3);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.map-theme-btn:hover { border-color: var(--border2); color: var(--text); }
+
+/* OpenStreetMap solo publica teselas claras y el panel es oscuro, así que
+   se invierten con un filtro. El filtro afecta solo al panel de teselas:
+   marcadores, ruta y popups mantienen sus colores. */
+#map.map-tiles-dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.95) saturate(0.65);
+}
+
 .leaflet-control-zoom {
   border: 1px solid var(--border2) !important;
   box-shadow: none !important;
@@ -371,6 +401,17 @@ main { padding: 32px; max-width: 1200px; margin: 0 auto; }
 }
 
 .leaflet-popup-close-button:hover { color: var(--text) !important; }
+
+.leaflet-tooltip {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  font-family: var(--mono);
+  font-size: 11px;
+  box-shadow: none;
+}
+
+.leaflet-tooltip::before { display: none; }
 
 /* Custom markers */
 .map-icon-wrapper { background: none !important; border: none !important; }
