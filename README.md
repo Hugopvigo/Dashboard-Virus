@@ -1,3 +1,7 @@
+<meta property="og:title" content="DASHBOARD-VIRUS">
+<meta property="og:description" content="Un panel de seguimiento del brote de hantavirus (cepa Andes) del MV Hondius.">
+<meta property="og:image" content="https://raw.githubusercontent.com/Hugopvigo/Dashboard-Virus/main/docs/capturas/og.png">
+
 <p align="center">
   <img src="docs/capturas/00-cabecera.png" alt="Hantavirus Monitor — panel de seguimiento del brote del MV Hondius" width="100%">
 </p>
